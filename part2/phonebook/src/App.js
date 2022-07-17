@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import Form from './components/Form'
 import Persons from './components/Persons'
 
@@ -8,6 +9,12 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
 
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => setPersons(response.data))
+  }, [])
+  
   const handleSubmit = event => {
     event.preventDefault()
 
