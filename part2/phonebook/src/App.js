@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Form from './components/Form'
+import numberService from './services/numbers'
 import Persons from './components/Persons'
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,22 +12,34 @@ const App = () => {
   const [filterText, setFilterText] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data))
+    numberService
+      .getAll()
+      .then(response => setPersons(response))
   }, [])
   
   const handleSubmit = event => {
     event.preventDefault()
 
     if (persons.some(e => e.name === newName)) {
-      alert(`${newName} already exists in the phonebook!`)
+      if(window.confirm(`${newName} is already added to phonebook, replace?`)) {
+        const person = persons.find(p => p.name === newName)
+        const updatedP = {...person, number:newNumber}
+
+        numberService.update(person.id, updatedP)
+                     .then(response => {
+                      setPersons(persons.map(person => person.id !== updatedP.id ? person : updatedP))
+                    })
+      }
       return
     }
 
-    setPersons(persons.concat({name: newName, number:newNumber}))
-    setNewName('')
-    setNewNumber('')
+    const newEntry = {
+      name: newName,
+      number: newNumber
+    }
+    numberService
+      .create(newEntry)
+      .then(response => setPersons(persons.concat(response)))
   }
 
   const handleNameFormChange = event => {
@@ -40,6 +54,13 @@ const App = () => {
     setFilterText(event.target.value)
   }
 
+  const handleDelete = (name, id) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      numberService.deleteNumber(id)
+        .then(() => setPersons(persons.filter(person => person.id !== id)))
+    }
+  }
+  
   const nameObj = {
     name: "name",
     value: newName,
@@ -58,7 +79,7 @@ const App = () => {
       <h2>add a new</h2>
       <Form handleSubmit={handleSubmit} nameObj={nameObj} numberObj={numberObj}/>
       <h2>Numbers</h2>
-      <Persons persons={persons} filterBy={filterText}/>
+      <Persons persons={persons} filterBy={filterText} handleDelete={handleDelete} />
     </div>
   )
 }
