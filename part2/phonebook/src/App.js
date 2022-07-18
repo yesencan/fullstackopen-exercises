@@ -3,14 +3,15 @@ import axios from 'axios'
 import Form from './components/Form'
 import numberService from './services/numbers'
 import Persons from './components/Persons'
-
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
-
+  const [notiText, setNotiText] = useState(null)
+  const [notiClass, setNotiClass] = useState('success')
   useEffect(() => {
     numberService
       .getAll()
@@ -28,7 +29,16 @@ const App = () => {
         numberService.update(person.id, updatedP)
                      .then(response => {
                       setPersons(persons.map(person => person.id !== updatedP.id ? person : updatedP))
+                    }).catch(error => {
+                      setNotiClass('error')
+                      setNotiText(`${newName} was already deleted from the server`)
+                      setTimeout(()=>setNotiText(null), 5000)
                     })
+        setNotiClass('success')
+        setNotiText(`Number for ${newName} succesfully changed`)
+        setTimeout(()=>setNotiText(null), 5000)
+        setNewName("")
+        setNewNumber("")
       }
       return
     }
@@ -40,6 +50,11 @@ const App = () => {
     numberService
       .create(newEntry)
       .then(response => setPersons(persons.concat(response)))
+    setNotiClass('success')
+    setNotiText(`Added ${newName}`)
+    setTimeout(()=>setNotiText(null), 5000)
+    setNewName("")
+    setNewNumber("")
   }
 
   const handleNameFormChange = event => {
@@ -58,6 +73,8 @@ const App = () => {
     if (window.confirm(`Delete ${name}?`)) {
       numberService.deleteNumber(id)
         .then(() => setPersons(persons.filter(person => person.id !== id)))
+      setNotiText(`Deleted ${name}`)
+      setTimeout(() => {setNotiText(null)}, 5000)
     }
   }
   
@@ -74,7 +91,8 @@ const App = () => {
   }
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <Notification className={notiClass} message={notiText}/>
       <p>filter shown with <input value={filterText} onChange={handleFilterChange} /></p>
       <h2>add a new</h2>
       <Form handleSubmit={handleSubmit} nameObj={nameObj} numberObj={numberObj}/>
