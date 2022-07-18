@@ -1,7 +1,9 @@
 import { CountryLine } from './CountryLine';
 import { CountryDisplay } from "./CountryDisplay";
 
+
 export const Display = ({ countries, searchText, setSearchText }) => {
+
   const filtered = countries.filter(country => country.name.common
     .toLowerCase()
     .includes(searchText.toLowerCase()));
@@ -14,6 +16,6 @@ export const Display = ({ countries, searchText, setSearchText }) => {
     );
   }
   else if (filtered.length === 1) {
-    return <CountryDisplay country={filtered[0]} />;
+    return <CountryDisplay country={filtered[0]}/>;
   }
 };
