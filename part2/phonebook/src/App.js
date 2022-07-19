@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Form from './components/Form'
 import numberService from './services/numbers'
 import Persons from './components/Persons'
