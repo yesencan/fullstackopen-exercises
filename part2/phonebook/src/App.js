@@ -25,19 +25,21 @@ const App = () => {
         const person = persons.find(p => p.name === newName)
         const updatedP = {...person, number:newNumber}
 
-        numberService.update(person.id, updatedP)
-                     .then(response => {
-                      setPersons(persons.map(person => person.id !== updatedP.id ? person : updatedP))
-                    }).catch(error => {
-                      setNotiClass('error')
-                      setNotiText(error.response.data.error)
-                      setTimeout(()=>setNotiText(null), 5000)
-                    })
-        setNotiClass('success')
-        setNotiText(`Number for ${newName} succesfully changed`)
-        setTimeout(()=>setNotiText(null), 5000)
-        setNewName("")
-        setNewNumber("")
+        numberService
+          .update(person.id, updatedP)
+          .then(response => {
+          setPersons(persons.map(person => person.id !== updatedP.id ? person : updatedP))
+          setNotiClass('success')
+          setNotiText(`Number for ${newName} succesfully changed`)
+          setTimeout(()=>setNotiText(null), 5000)
+          setNewName("")
+          setNewNumber("")
+          })
+          .catch(error => {
+            setNotiClass('error')
+            setNotiText(error.response.data.error)
+            setTimeout(()=>setNotiText(null), 5000)
+          })
       }
       return
     }
