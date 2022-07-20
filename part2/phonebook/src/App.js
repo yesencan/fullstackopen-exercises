@@ -48,12 +48,19 @@ const App = () => {
     }
     numberService
       .create(newEntry)
-      .then(response => setPersons(persons.concat(response)))
-    setNotiClass('success')
-    setNotiText(`Added ${newName}`)
-    setTimeout(()=>setNotiText(null), 5000)
-    setNewName("")
-    setNewNumber("")
+      .then(response => {
+        setNotiClass('success')
+        setNotiText(`Added ${newName}`)
+        setTimeout(()=>setNotiText(null), 5000)
+        setNewName("")
+        setNewNumber("")
+        return setPersons(persons.concat(response))
+      })
+      .catch(error => {
+        setNotiClass('error')
+        setNotiText(error.response.data.error)
+        setTimeout(()=>setNotiText(null), 5000)
+      })
   }
 
   const handleNameFormChange = event => {
