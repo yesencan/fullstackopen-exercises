@@ -30,7 +30,7 @@ const App = () => {
                       setPersons(persons.map(person => person.id !== updatedP.id ? person : updatedP))
                     }).catch(error => {
                       setNotiClass('error')
-                      setNotiText(`${newName} was already deleted from the server`)
+                      setNotiText(error.response.data.error)
                       setTimeout(()=>setNotiText(null), 5000)
                     })
         setNotiClass('success')
