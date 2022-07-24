@@ -1,0 +1,11 @@
+POST  http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZha28iLCJpZCI6IjYyZGQ2YzAxYzJmMDNjZTA2YWQ1YjU5MyIsImlhdCI6MTY1ODY4MDIyOX0.FDmsDOrddBynmg5Y3BBD0XPPEYMzdcG9U5Xksbr73mU
+
+{ 
+    "title":"fakko",
+    "author":"fakti",
+    "url":"fako.com",
+    "likes":3
+}
+
